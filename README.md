@@ -24,7 +24,7 @@ TODO:
  - audio player progress bar
 
 ___________________________
-hot to use Apache Cordova:
+how to use Apache Cordova:
 ===========================
 
 to run the app in android: 
