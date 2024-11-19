@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<!--
+	  Customize this policy to fit your own app's needs. For more guidance, see:
+	      https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+	  Some notes:
+	      * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+	      * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+	      * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+	          * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">  -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' audio-reader.kansaspublicradio.org ondemand.audioreader.net data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, viewport-fit=cover" />
+
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+
+    <!-- load scripts before loading cordova.js -->
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <title>Audio-Reader Network of Kansas</title>
+  </head>
+  <body>
+
+
+
+<!-- Top Navigation Menu -->
+<div class="topnav">
+  <a href="#home" class="active">
+    <strong>Audio-Reader</strong>
+  </a>
+  <!-- Navigation links (hidden by default) -->
+  <div id="myLinks">
+    <a href="#" class='navLink' page='live'>Listen Live</a>
+    <a href="#" class='navLink' page='ondemand'>On-Demand</a>
+    <a href="#" class='navLink' page='program-guide'>Program Guide</a>
+  </div>
+  <!-- menu button toggle the navigation links -->
+  <a href="#" id="menuButton" class="icon">
+    Menu
+  </a>
+</div>
+
+
+<div class="page" id="live" style="display:block">
+  <h1>Listen to Audio-Reader</h1>
+  <p>Tap the play button at the bottom of the screen to play the live stream. Or
+  <a href="https://streaming.kansaspublicradio.org:8001/audioreader">tap here to listen from your browser</a>.</p>
+</div>
+
+
+<div class="page" id="ondemand">
+  <h1>Listen to On-Demand</h1>
+  <p>Loading...</p>
+</div>
+
+<div class="page" id="program-guide">
+  <h1>Program Guide</h1>
+  <p>Loading...</p>
+</div>
+
+<div class="page" id="program">
+  <h1>Loading Program</h1>
+  <p>Loading...</p>
+</div>
+
+<div id='player'>
+  <div id='playButton'>Play</div>
+  <div id='pauseButton' style="display: none;">Stop</div>
+  <div id='player-inner'>Play the live stream</div>
+</div>
+
+  </body>
+</html>

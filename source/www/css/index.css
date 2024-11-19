@@ -1,0 +1,107 @@
+body {
+  padding: env(safe-area-inset-top);
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  /*text-align: right;*/
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
+  overflow: auto;
+}
+body, p, div{
+  margin: 0;
+}
+p {
+  padding-right: 5px;
+}
+
+.page{
+  padding: 20px;
+  display: none; /* toggle this on and off with JS */
+}
+
+.idk {
+  position: fixed;
+  bottom: 10%;
+  right: 7%;
+  float: right;
+  clear: both;
+  height: 60px;
+  width: 160px;
+}
+
+/* Landscape layout (with min-width) */
+@media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
+  body {
+    max-height: 400px;
+  }
+}
+
+
+/* ----- TOP NAVICATION -------- */
+
+ /* Style the navigation menu */
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+  position: relative;
+}
+
+/* Hide the links inside the navigation menu (except for logo/home) */
+.topnav #myLinks {
+  display: none;
+}
+
+/* Style navigation menu links */
+.topnav a {
+  color: white;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  display: block;
+}
+
+/* Style the hamburger menu */
+.topnav a.icon {
+  background: #85898a;
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+/* Add a grey background color on mouse-over */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Style the active link (or home/logo) */
+.active {
+  background-color: #0051ba;
+  color: white;
+} 
+
+/* -------- FOOTER AUDIO PLAYER ----------- */
+#player {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: #0051ba;
+   color: white;
+}
+#playButton, #pauseButton {
+   background-color: #85898a;
+   padding: 20px;
+   display: inline-block;
+   cursor: pointer;
+}
+#player-inner {
+  padding: 20px;
+  width: 100%;
+  display: inline;
+}
+
+
+
