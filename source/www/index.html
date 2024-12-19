@@ -10,8 +10,21 @@
 	      * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
 	          * Enable inline JS: add 'unsafe-inline' to default-src
         -->
-    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">  -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' audio-reader.kansaspublicradio.org ondemand.audioreader.net data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+    <!-- don't allow anything external, except for gstatic which is needed for Android
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">  
+    -->
+
+    <!-- don't allow external anything except from audio-reader.kansaspublicradio.org  
+       note: not working in iOS 
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' audio-reader.kansaspublicradio.org ondemand.audioreader.net data: audio-reader.kansaspublicradio.org gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' content:;"> --> 
+
+    <!-- allow everything, except external css and external JS: -->
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">    
+
+    <!-- allow fucking everything ?? 
+    <meta http-equiv="Content-Security-Policy" content="default-src * ; style-src * ; script-src * ; media-src *">   
+    -->
+
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
@@ -20,6 +33,8 @@
     <link rel="stylesheet" type="text/css" href="css/index.css" />
 
     <!-- load scripts before loading cordova.js -->
+    <script type="text/javascript" src="js/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery.jplayer.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
     <script type="text/javascript" src="cordova.js"></script>
 
@@ -51,12 +66,48 @@
   <h1>Listen to Audio-Reader</h1>
   <p>Tap the play button at the bottom of the screen to play the live stream. Or
   <a href="https://streaming.kansaspublicradio.org:8001/audioreader">tap here to listen from your browser</a>.</p>
+
+  <button id='playLiveStream'>Play the Live Stream</button>
+  <p>Now playing: <span id='nowPlayingSpan'>(loading...)</span>
+  
+  <h2>Settings:</h2>
+
+  <label for='fontSizeSetting'>Font size: </label>
+  <select id='fontSizeSetting'>
+    <option value='10'>10</option>
+    <option value='10'>11</option>
+    <option selected="selected"  value='10'>12</option>
+    <option value='10'>13</option>
+    <option value='10'>14</option>
+    <option value='10'>15</option>
+    <option value='10'>16</option>
+  </select>  
+  <br />
+
+  <label for='backgroundPlaySetting'>Keep playing in background: </label>
+  <select id='backgroundPlaySetting'>
+    <option selected="selected" value='1'>True</option>
+    <option value='0'>False</option>
+  </select>
+  <br />
+
+  <label for='playbackSpeedSetting'>On-Demand Playback Speed: </label>
+  <select id='playbackSpeedSetting'>
+    <option value='.25'>x0.25</option>
+    <option value='.5'>x0.5</option>
+    <option value='.75'>x0.75</option>
+    <option selected="selected" value='1'>normal</option>
+    <option value='1.25'>x1.25</option>
+    <option value='1.5'>x1.5</option>
+    <option value='1.75'>x1.75</option>
+    <option value='2'>x2</option>
+  </select>
+
 </div>
 
 
 <div class="page" id="ondemand">
   <h1>Listen to On-Demand</h1>
-  <p>Loading...</p>
 </div>
 
 <div class="page" id="program-guide">
@@ -72,7 +123,7 @@
 <div id='player'>
   <div id='playButton'>Play</div>
   <div id='pauseButton' style="display: none;">Stop</div>
-  <div id='player-inner'>Play the live stream</div>
+  <div id='player-inner'>Loading...</div>
 </div>
 
   </body>

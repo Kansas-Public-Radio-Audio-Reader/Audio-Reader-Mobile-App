@@ -12,4 +12,13 @@
         <preference name="scheme" value="app" />
         <preference name="hostname" value="localhost" />
     </platform>
+
+    <!--
+     - attempting to whitelist the json and xml feeds. 
+     - see 'Other Notes' in https://cordova.apache.org/docs/en/latest/guide/appdev/allowlist/index.html
+     -->
+    <access origin='*' allows-arbitrary-loads-for-media='true' allows-arbitrary-loads-in-web-content='true' allows-local-networking='true' />
+    <access origin='https://audio-reader.kansaspublicradio.org' minimum-tls-version='TLSv1.1' requires-forward-secrecy='false' requires-certificate-transparency='false' />
+    
+    
 </widget>
