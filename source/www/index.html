@@ -40,9 +40,13 @@
 
     <title>Audio-Reader Network of Kansas</title>
   </head>
-  <body>
 
 
+  <body id="htmlBody">
+
+    <div id='loadingDiv' style="position: absolute; left: 50%; top: 50%; display: none;">
+     <span style="padding: 5px; background-color: yellow">Loading...</span>
+    </div>
 
 <!-- Top Navigation Menu -->
 <div class="topnav">
@@ -63,24 +67,29 @@
 
 
 <div class="page" id="live" style="display:block">
+  <div id="ar-alerts"></div>
   <h1>Listen to Audio-Reader</h1>
   <p>Tap the play button at the bottom of the screen to play the live stream. Or
-  <a href="https://streaming.kansaspublicradio.org:8001/audioreader">tap here to listen from your browser</a>.</p>
+    <a href="https://streaming.kansaspublicradio.org:8001/audioreader">tap here to listen from your browser</a>.
+  </p>
 
+  <p>
   <button id='playLiveStream'>Play the Live Stream</button>
-  <p>Now playing: <span id='nowPlayingSpan'>(loading...)</span>
+  <br />
+  Now playing: <span id='nowPlayingSpan'>(loading...)</span>
+  </p>
   
   <h2>Settings:</h2>
 
   <label for='fontSizeSetting'>Font size: </label>
   <select id='fontSizeSetting'>
     <option value='10'>10</option>
-    <option value='10'>11</option>
-    <option selected="selected"  value='10'>12</option>
-    <option value='10'>13</option>
-    <option value='10'>14</option>
-    <option value='10'>15</option>
-    <option value='10'>16</option>
+    <option value='11'>11</option>
+    <option selected="selected"  value='12'>12</option>
+    <option value='13'>13</option>
+    <option value='14'>14</option>
+    <option value='15'>15</option>
+    <option value='16'>16</option>
   </select>  
   <br />
 
@@ -89,6 +98,7 @@
     <option selected="selected" value='1'>True</option>
     <option value='0'>False</option>
   </select>
+  (doesn't work)
   <br />
 
   <label for='playbackSpeedSetting'>On-Demand Playback Speed: </label>
@@ -108,21 +118,21 @@
 
 <div class="page" id="ondemand">
   <h1>Listen to On-Demand</h1>
+  <p>Tap the title of the program to access the on-demand recordings.</p>
 </div>
 
 <div class="page" id="program-guide">
-  <h1>Program Guide</h1>
+  <h1>Program Guide & Schedule</h1>
   <p>Loading...</p>
 </div>
 
 <div class="page" id="program">
-  <h1>Loading Program</h1>
-  <p>Loading...</p>
 </div>
+
 
 <div id='player'>
   <div id='playButton'>Play</div>
-  <div id='pauseButton' style="display: none;">Stop</div>
+  <div id='pauseButton' style="display: none;">Pause</div>
   <div id='player-inner'>Loading...</div>
 </div>
 

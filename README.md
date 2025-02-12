@@ -24,13 +24,14 @@ TODO:
  - audio player progress bar
 
 ___________________________
-how to use Apache Cordova:
+hot to use Apache Cordova:
 ===========================
 
 to run the app in android: 
  - open Android Studio as needed
  - open the Virtual Device Manager from the More Actions dropdown
  - launch a virtual device
+ - !IMPORTANT! In the virtual device, say 'yes' to allowing connected computer to control device
  - open a terminal
  - cd to AudioReaderApp
  - run `sudo cordova run android` 
@@ -38,5 +39,5 @@ to run the app in android:
 to run the app in ios
  - open a terminal
  - cd to AudioReaderApp
- - run `sudo cordova run android`
+ - run `cordova run ios`
 
