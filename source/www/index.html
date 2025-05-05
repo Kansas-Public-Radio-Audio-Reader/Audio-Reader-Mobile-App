@@ -28,7 +28,8 @@
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, viewport-fit=cover" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" /> 
+    <!-- add viewport-fit=cover to the above meta tag to overlay the status bar with the html body in iOS-->
 
     <link rel="stylesheet" type="text/css" href="css/index.css" />
 
@@ -44,13 +45,10 @@
 
   <body id="htmlBody">
 
-    <div id='loadingDiv' style="position: absolute; left: 50%; top: 50%; display: none;">
-     <span style="padding: 5px; background-color: yellow">Loading...</span>
-    </div>
-
 <!-- Top Navigation Menu -->
 <div class="topnav">
-  <a href="#home" class="active">
+  <a href="#" class="active navLink" id="topnav-title" page='live'>
+    <!--<img src="img/ar-logo.png" id="topnav-img" />-->
     <strong>Audio-Reader</strong>
   </a>
   <!-- Navigation links (hidden by default) -->
@@ -58,6 +56,7 @@
     <a href="#" class='navLink' page='live'>Listen Live</a>
     <a href="#" class='navLink' page='ondemand'>On-Demand</a>
     <a href="#" class='navLink' page='program-guide'>Program Guide</a>
+    <a href="#" class='navLink' page='about'>About</a>
   </div>
   <!-- menu button toggle the navigation links -->
   <a href="#" id="menuButton" class="icon">
@@ -69,50 +68,60 @@
 <div class="page" id="live" style="display:block">
   <div id="ar-alerts"></div>
   <h1>Listen to Audio-Reader</h1>
-  <p>Tap the play button at the bottom of the screen to play the live stream. Or
-    <a href="https://streaming.kansaspublicradio.org:8001/audioreader">tap here to listen from your browser</a>.
-  </p>
+  <div class="border-div">
+    <p>Use the play button bellow to play the live stream. Or
+      <a href="https://streaming.kansaspublicradio.org:8001/audioreader">tap here to listen from your browser</a>.
+    </p>
+    <p>
+      <button id='playLiveStream'>Play the Live Stream</button>
+    </p>
+    <p>
+      Now playing: <span id='nowPlayingSpan'>(loading...)</span>
+    </p>
+  </div>
 
-  <p>
-  <button id='playLiveStream'>Play the Live Stream</button>
-  <br />
-  Now playing: <span id='nowPlayingSpan'>(loading...)</span>
-  </p>
-  
-  <h2>Settings:</h2>
+  <div class="border-div">
+    <h2>Settings:</h2>
+<ul>
+  <li>
+    <label for='fontSizeSetting'>Font size: </label>
+    <select id='fontSizeSetting'>
+      <option value='10'>10</option>
+      <option value='11'>11</option>
+      <option value='12'>12</option>
+      <option value='13'>13</option>
+      <option selected="selected"  value='14'>14</option>
+      <option value='16'>16</option>
+      <option value='18'>18</option>
+      <option value='20'>20</option>
+      <option value='24'>24</option>
+    </select>  
+  </li>
+  <li>
+    <label for='backgroundPlaySetting'>Keep playing in background: </label>
+    <select id='backgroundPlaySetting'>
+      <option selected="selected" value='1'>True</option>
+      <option value='0'>False</option>
+    </select>
+    (needs testing)
+  </li>
+  <li>
 
-  <label for='fontSizeSetting'>Font size: </label>
-  <select id='fontSizeSetting'>
-    <option value='10'>10</option>
-    <option value='11'>11</option>
-    <option selected="selected"  value='12'>12</option>
-    <option value='13'>13</option>
-    <option value='14'>14</option>
-    <option value='15'>15</option>
-    <option value='16'>16</option>
-  </select>  
-  <br />
+      <label for='playbackSpeedSetting'>On-Demand Playback Speed: </label>
+      <select id='playbackSpeedSetting'>
+        <option value='.25'>x0.25</option>
+        <option value='.5'>x0.5</option>
+        <option value='.75'>x0.75</option>
+        <option selected="selected" value='1'>normal</option>
+        <option value='1.25'>x1.25</option>
+        <option value='1.5'>x1.5</option>
+        <option value='1.75'>x1.75</option>
+        <option value='2'>x2</option>
+      </select>
+  </li>
+</ul>
 
-  <label for='backgroundPlaySetting'>Keep playing in background: </label>
-  <select id='backgroundPlaySetting'>
-    <option selected="selected" value='1'>True</option>
-    <option value='0'>False</option>
-  </select>
-  (doesn't work)
-  <br />
-
-  <label for='playbackSpeedSetting'>On-Demand Playback Speed: </label>
-  <select id='playbackSpeedSetting'>
-    <option value='.25'>x0.25</option>
-    <option value='.5'>x0.5</option>
-    <option value='.75'>x0.75</option>
-    <option selected="selected" value='1'>normal</option>
-    <option value='1.25'>x1.25</option>
-    <option value='1.5'>x1.5</option>
-    <option value='1.75'>x1.75</option>
-    <option value='2'>x2</option>
-  </select>
-
+  </div>
 </div>
 
 
@@ -123,17 +132,32 @@
 
 <div class="page" id="program-guide">
   <h1>Program Guide & Schedule</h1>
-  <p>Loading...</p>
+  <p>Coming Soon...</p>
 </div>
 
+<div class="page" id="about">
+  <h1>About Audio-Reader </h1>
+  <p>The Audio-Reader Network is an audio information service for individuals who are blind, visually impaired, or print disabled, throughout Kansas and western Missouri. We provide accessible audio versions of newspapers, magazines and books on the air, over the internet, by telephone and via smartspeakers, 24 hours a day. Services are free of charge to anyone who is unable to read standard printed material. </p>
+  <p>For more information, please visit <a href="https://reader.ku.edu">our website</a>. We also have a <a href="https://audioreader.net/">screenreader-friendly</a> site where you can accessibly explore our <a href="https://audioreader.net/programguide">program guide</a>, the <a href="https://audioreader.net/schedule">daily schedule</a>, and more. </p>
+</div>
+
+<!-- don't delete this: -->
 <div class="page" id="program">
 </div>
 
 
-<div id='player'>
-  <div id='playButton'>Play</div>
-  <div id='pauseButton' style="display: none;">Pause</div>
-  <div id='player-inner'>Loading...</div>
+
+<div id='footer'>
+  <div id='loadingDiv'>
+    <span>Loading...</span>
+  </div>
+  <div id='player'>
+    <div id='playButton'><strong>Play</strong></div>
+    <div id='pauseButton' style="display: none;"><strong>Pause</strong></div>
+    <div id='player-wrapper'>
+      <div id='player-inner'>Loading...</div>
+    </div>
+  </div>
 </div>
 
   </body>

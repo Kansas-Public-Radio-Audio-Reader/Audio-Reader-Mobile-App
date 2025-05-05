@@ -19,6 +19,7 @@
      *    - [CHECK] implement back button/swipe [working in Android only]
      *    - implement HLS stream for iOS ?
      *    - implement Keep Playing in Background
+     *    - add a "playing" label to On Demand recording when its selected and playing
      */
 
 
@@ -30,7 +31,7 @@ const programsURL = "https://audio-reader.kansaspublicradio.org/programs.json?x=
 const alertsURL = "https://portal.kansaspublicradio.org/widgets/aralerts.php";
 const defaultKeepInBackground = true;
 const defaultPlaybackSpeed = 1.0;
-const defaultFontSize = 12; // in points
+const defaultFontSize = 14; // in points
 /* end options and settings: */
 
 var app = {
@@ -70,6 +71,7 @@ var app = {
         app.setAudioSource(streamUrl);
         app.initAudio(); // yes this is needed
         app.setPlayerText();
+        app.changeFontSizeEvent(defaultFontSize);
 
         // initialize the live stream page
         app.getNowPlayingTitlePromise().then(function(response) {
@@ -178,14 +180,14 @@ var app = {
         var play = document.getElementById("playButton");
         var pause = document.getElementById("pauseButton");
         play.style.display = "none";
-        pause.style.display = "inline-block";
+        pause.style.display = "block";
     },
 
     pauseButtonEvent: function() {
         this.pauseAudio();
         var play = document.getElementById("playButton");
         var pause = document.getElementById("pauseButton");
-        play.style.display = "inline-block";
+        play.style.display = "block";
         pause.style.display = "none";
     },
 
@@ -254,12 +256,14 @@ var app = {
                     case Media.MEDIA_STARTING:
                         console.log('status change detected: MEDIA_STARTING');
                         // display the "loading" sign
-                        document.getElementById("loadingDiv").style.display = "block";
+                        //document.getElementById("loadingDiv").style.display = "block";
+                        $('#loadingDiv').show(500);
                         break;
                     case Media.MEDIA_RUNNING:
                         console.log('status change detected: MEDIA_RUNNING');
                         // remove the "loading" sign
-                        document.getElementById("loadingDiv").style.display = "none";
+                        //document.getElementById("loadingDiv").style.display = "none";
+                        $('#loadingDiv').hide(500);
                         break;
                     case Media.MEDIA_PAUSED:
                         console.log('status change detected: MEDIA_PAUSED');
@@ -358,7 +362,7 @@ var app = {
      *  ===================================
      */
 
-    togglePages: function(pageName) {
+    togglePagesBackup: function(pageName) {
         // first, close all pages
         document.querySelectorAll(".page").forEach(function(page){
             page.style.display = "none";
@@ -370,6 +374,16 @@ var app = {
         // set the viewport to the top
         window.scrollTo(0, 0);
     },
+
+    togglePages: function(pageName) {
+        // set the viewport to the top
+        window.scrollTo(0, 0);
+        
+        $('.page').fadeOut(500);
+        $('#'+pageName).fadeIn(500);
+        
+    },
+
 
     togglePlayerButtons: function() {
         var play = document.getElementById("playButton");
@@ -466,13 +480,17 @@ var app = {
 
                 programCategories.forEach(function(category) {
                     var div = document.createElement("div");
+                    div.classList.add('border-div');
                     var header = document.createElement("h2");
                     header.innerText = category.categoryName;
                     div.appendChild(header);
 
+                    var programRows = document.createElement('div');
+                    programRows.classList.add("programRows");
+
                     var i = 0;
                     category.programs.forEach(function(program) {
-                        var title = document.createElement('h3');
+                        var title = document.createElement('p');
                         title.innerText = program.programName;
                         title.classList.add("programRow");
                         if (isEven(i)) {
@@ -490,10 +508,10 @@ var app = {
                             app.addOnDemandText(program.feed, programPage);
                             app.togglePages('program');
                         });
-                        div.appendChild(title);
+                        programRows.appendChild(title);
                         i++;
                     });
-
+                    div.appendChild(programRows);
                     containerElement.appendChild(div);
                 });
                 
@@ -505,6 +523,10 @@ var app = {
         app.getOnDemandXMLPromise(url).then(function(data) {
             // use the XML data like we would if we had a normal DOM reference
 
+            // title
+            var title = document.createElement('h1');
+            title.innerText = data.querySelector("title").innerHTML;
+            element.append(title);
 
             // escape button
             var button = document.createElement('button');
@@ -520,6 +542,7 @@ var app = {
             element.appendChild(summary);
 
             // recordings
+            var recordings = document.createElement('div');
             const items = data.querySelectorAll("item");
             var i = 0;
             items.forEach(el => {
@@ -536,9 +559,10 @@ var app = {
                     app.playButtonEvent();
                     app.setPlayerText(el.querySelector('title').innerHTML);
                 });
-                element.appendChild(newElement);
+                recordings.appendChild(newElement);
                 i++;
             });
+            element.appendChild(recordings);
         });
     },
     

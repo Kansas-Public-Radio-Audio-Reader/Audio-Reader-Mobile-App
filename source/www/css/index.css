@@ -1,23 +1,17 @@
 body {
-  padding: env(safe-area-inset-top);
+  
+  padding-top: env(safe-area-inset-top);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  
   position: absolute;
   height: 100%;
   width: 100%;
-  /*text-align: right;*/
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   overflow: auto;
-  font-size: 12pt;
-}
-
-p {
-  padding-right: 5px;
-}
-
-.page{
-  padding: 20px;
-  display: none; /* toggle this on and off with JS */
-  margin-top: 28px; /* for the header */
-  margin-bottom: 30px; /* for the footer */
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  background-color: #0c2a3e;
+  color: white;
 }
 
 /* Landscape layout (with min-width) */
@@ -25,6 +19,40 @@ p {
   body {
     max-height: 400px;
   }
+}
+
+
+p {
+  padding-right: 5px;
+}
+
+a {
+  color: #5ec2ff;
+}
+
+.page{
+  padding: 20px 20px 20px 5px;
+  display: none; /* toggle this on and off with JS */
+  margin-top: 28px; /* for the header */
+  margin-bottom: 50px; /* for the footer */
+}
+
+.border-div {
+  border: 1px solid #55748a;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+button {
+  background-color: #003459;
+  border: none;
+  border-radius: 20px;
+  color: white;
+  padding: 10px;
+  font-size: 115%;
+  border: 1px solid #55748a;
+  border-radius: 10px;
 }
 
 button#playLiveStream {
@@ -41,7 +69,12 @@ button#playLiveStream {
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #333;
+  box-shadow: 0 -5px 25px #000;
+  background-color: #003459;
+}
+
+#topnav-img {
+  height: 40px;
 }
 
 /* Hide the links inside the navigation menu (except for logo/home) */
@@ -49,80 +82,119 @@ button#playLiveStream {
   display: none;
 }
 
+.navLink {
+  border-top: 1px solid #55748a;
+}
+
 /* Style navigation menu links */
 .topnav a {
   color: white;
-  padding: 14px 16px;
+  padding: 20px;
   text-decoration: none;
-  font-size: 17px;
+  font-size: 120%;
   display: block;
 }
 
 /* Style the hamburger menu */
 .topnav a.icon {
-  background: #85898a;
   display: block;
   position: absolute;
   right: 0;
   top: 0;
+  background-color: #003459;
+  border: 1px solid #55748a;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
 }
 
-/* Add a grey background color on mouse-over */
+/* Add a grey background color on mouse-over 
 .topnav a:hover {
   background-color: #ddd;
   color: black;
-}
+}*/
 
 /* Style the active link (or home/logo) */
 .active {
-  background-color: #0051ba;
+  background-color: #1e4866;
   color: white;
 } 
 
 /* -------- FOOTER AUDIO PLAYER ----------- */
-#player {
+#footer {
    position: fixed;
    left: 0;
    bottom: 0;
    width: 100%;
-   background-color: #0051ba;
+}
+#player {
+   display: inline-flex;
+   width: 100%;
+   background-color: #1e4866;
    color: white;
+   font-size: 110%;
+   box-shadow: 0 5px 25px #000;
 }
 #playButton, #pauseButton {
-   background-color: #85898a;
-   padding: 20px;
-   display: inline-block;
-   cursor: pointer;
+   background-color: #003459;
+   border: 1px solid #55748a;
+   border-radius: 10px;
+   padding: 10px;
+   margin: 10px;
+  cursor: pointer;
+   /*width: 50px;*/
+}
+#player-wrapper {
+  margin: 20px;
 }
 #player-inner {
-  padding: 20px;
-  width: 100%;
-  display: inline;
+}
+#loadingDiv {   
+   display: none;
+   width: 100%;
+   padding: 10px;
+   background-color: #ffc82d;
+   color: black;
 }
 
 /* -------- ON DEMAND PAGE -----------*/
+.programRows {
+}
+
 .programRow {
-  padding: 5px;
-  border: 1px solid #ccc;
+  padding: 10px;
   margin: 0;
   margin-top: -1px;
+  border: 1px solid #55748a;
 }
 .evenProgramRow {
-  background-color: #eee;
+  background-color: #0a1b26;
 }
 .oddProgramRow {
 }
+.programRow:first-child {
+    border-radius: 15px 15px 0 0;
+}
+.programRow:last-child {
+    border-radius: 0 0 15px 15px;
+}
 
 .recordingRow {
-  padding: 5px;
-  border: 1px solid #ccc;
+  padding: 10px;
   margin: 0;
   margin-top: -1px;
+  border: 1px solid #55748a;
 }
 .oddRecordingRow {
 }
 .evenRecordingRow {
-  background-color: #eee;
+  background-color: #0a1b26;
+}
+.recordingRow:first-child {
+    border-radius: 15px 15px 0 0;
+}
+.recordingRow:last-child {
+    border-radius: 0 0 15px 15px;
 }
 
 /* -------- alerts -----------*/
