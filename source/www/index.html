@@ -55,7 +55,7 @@
   <div id="myLinks">
     <a href="#" class='navLink' page='live'>Listen Live</a>
     <a href="#" class='navLink' page='ondemand'>On-Demand</a>
-    <a href="#" class='navLink' page='program-guide'>Program Guide</a>
+    <a href="#" class='navLink' page='schedule'>Schedule</a>
     <a href="#" class='navLink' page='about'>About</a>
   </div>
   <!-- menu button toggle the navigation links -->
@@ -69,14 +69,16 @@
   <div id="ar-alerts"></div>
   <h1>Listen to Audio-Reader</h1>
   <div class="border-div">
-    <p>Use the play button bellow to play the live stream. Or
-      <a href="https://streaming.kansaspublicradio.org:8001/audioreader">tap here to listen from your browser</a>.
+    <p>Use the play buttons bellow to play our live streams.
     </p>
     <p>
-      <button id='playLiveStream'>Play the Live Stream</button>
+      <button id='playLiveStream'>
+        Play the Live Stream.
+        <p style="font-size: 75%">Now playing: <span id='nowPlayingSpan'>(loading...)</span></p>
+      </button>
     </p>
     <p>
-      Now playing: <span id='nowPlayingSpan'>(loading...)</span>
+      <button id='playLiveStreamKC'>Play the Kansas City Live Stream.</button>
     </p>
   </div>
 
@@ -130,9 +132,8 @@
   <p>Tap the title of the program to access the on-demand recordings.</p>
 </div>
 
-<div class="page" id="program-guide">
-  <h1>Program Guide & Schedule</h1>
-  <p>Coming Soon...</p>
+<div class="page" id="schedule">
+  <h1>Program Schedule</h1>
 </div>
 
 <div class="page" id="about">

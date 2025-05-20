@@ -21,7 +21,6 @@ body {
   }
 }
 
-
 p {
   padding-right: 5px;
 }
@@ -31,10 +30,9 @@ a {
 }
 
 .page{
-  padding: 20px 20px 20px 5px;
-  display: none; /* toggle this on and off with JS */
+  padding: 20px 20px 80px 5px; /* top right bottom left */
+  display: none; /* toggle this on and off with JS to navigate through the pages */
   margin-top: 28px; /* for the header */
-  margin-bottom: 50px; /* for the footer */
 }
 
 .border-div {
@@ -53,11 +51,21 @@ button {
   font-size: 115%;
   border: 1px solid #55748a;
   border-radius: 10px;
+  width: 100%;
 }
 
 button#playLiveStream {
   font-size: 150%;
   padding: 20px;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 16px;
+  margin-bottom: 10px;
 }
 
 

@@ -17,11 +17,29 @@ FILES:
  	everything has to be done with listener events sinse no inline code allowed in the html files
 
 TODO: 
- - now playing information for live
- - on-demand catalog
- - program guide
- - app icons
- - audio player progress bar
+- [CHECK] now playing information for live
+- [CHECK] on-demand catalog
+- [CHECK] program guide
+- [CHECK] app icons
+-   audio player progress bar
+- [CHECK] toggle play button for pause button
+- [CHECK] set the now playing label 
+- [CHECK] set options for play when screen is locked (ios only?)
+     *        { playAudioWhenScreenIsLocked : true }
+     *        Note: To allow playback with the screen locked or background audio you have to 
+     *          add audio to UIBackgroundModes in the info.plist file.
+     *          see: https://developer.apple.com/documentation/uikit#//apple_ref/doc/uid/TP40007072-CH4-SW23
+- [CHECK] display "loading" while the stream is buffering and not yet playing [working in Android only
+- [CHECK] be able to set the playback rate
+- [CHECK] implement PAUSE
+- [CHECK] implement back button/swipe [working in Android only]
+- [CHECK] implement program schedule page
+-  implement HLS stream for iOS ?
+-  test Keep Playing in Background
+-  add a "playing" label to On Demand recording when its selected and playing
+- [CHECK] KC stream
+-   test on screen readers 
+- [CHECK] fix padding
 
 ___________________________
 hot to use Apache Cordova:

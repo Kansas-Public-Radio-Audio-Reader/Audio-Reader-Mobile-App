@@ -3,7 +3,7 @@
      *  ===============================================
      *  source/js/index.js
      *  author: Danny Mantyla
-     *  date: Q4 2024 to Q? 2025
+     *  date: Q4 2024 to Q2 2025
      *
      *  TODO: 
      *    - [CHECK] toggle play button for pause button
@@ -17,17 +17,23 @@
      *    - [CHECK] be able to set the playback rate
      *    - [CHECK] implement PAUSE
      *    - [CHECK] implement back button/swipe [working in Android only]
+     *    - [CHECK] implement program schedule page
      *    - implement HLS stream for iOS ?
-     *    - implement Keep Playing in Background
+     *    - test Keep Playing in Background
      *    - add a "playing" label to On Demand recording when its selected and playing
+     *    - [CHECK] KC stream
+     *    - test on screen readers 
+     *    - [CHECK] fix padding
      */
 
 
 /* options and settings: */
 const streamUrl = "https://streaming.kansaspublicradio.org:8001/audioreader";
+const streamUrlKC = "https://streaming.kansaspublicradio.org:8001/audioreaderkc";
 const hlsStreamUrl = ""; // "https://streams.kut.org/4426/playlist.m3u8" = sample HLS stream
 const nowPlayingURL = "https://audio-reader.kansaspublicradio.org/nowplaying.json";
 const programsURL = "https://audio-reader.kansaspublicradio.org/programs.json?x=3";
+const scheduleURL = "https://audio-reader.kansaspublicradio.org/schedule.json?x=1;"
 const alertsURL = "https://portal.kansaspublicradio.org/widgets/aralerts.php";
 const defaultKeepInBackground = true;
 const defaultPlaybackSpeed = 1.0;
@@ -78,9 +84,11 @@ var app = {
             document.getElementById("nowPlayingSpan").innerText = response;
         });
 
-        // initialize the on-demand page
+        // initialize the on-demand and schedule pages page
         var onDemandPage = document.getElementById("ondemand");
+        var schedulePage = document.getElementById("schedule");
         app.buildOnDemandSection(programsURL, onDemandPage);
+        app.buildScheduleSection(scheduleURL, schedulePage);
 
         // add event listeners here
         document.addEventListener("backbutton", app.onBackButtonEvent, false);
@@ -103,6 +111,11 @@ var app = {
             app.setAudioSource(streamUrl);
             app.playButtonEvent();
             app.setPlayerText(); // no parameter == set to now playing
+        });
+        document.getElementById("playLiveStreamKC").addEventListener('click', function(){
+            app.setAudioSource(streamUrlKC);
+            app.playButtonEvent();
+            app.setPlayerText("Kansas City Live Stream");
         });
 
         // settings event listeners:
@@ -244,7 +257,7 @@ var app = {
             // error callback
             function (err) { 
                 console.log("playAudio(): Audio Error: " + JSON.stringify(err)); 
-                alert("Audio Error: " + JSON.stringify(err));
+                $('#loadingDiv').hide(500); // make sure the loading div isn't still visible
             },
             // media status callback
             function (status) {
@@ -256,13 +269,11 @@ var app = {
                     case Media.MEDIA_STARTING:
                         console.log('status change detected: MEDIA_STARTING');
                         // display the "loading" sign
-                        //document.getElementById("loadingDiv").style.display = "block";
                         $('#loadingDiv').show(500);
                         break;
                     case Media.MEDIA_RUNNING:
                         console.log('status change detected: MEDIA_RUNNING');
                         // remove the "loading" sign
-                        //document.getElementById("loadingDiv").style.display = "none";
                         $('#loadingDiv').hide(500);
                         break;
                     case Media.MEDIA_PAUSED:
@@ -296,11 +307,7 @@ var app = {
             }
 
             // begin playing the audio
-            if (this.keepPlayingInBackground) {
-                this.mediaPlayer.play({ playAudioWhenScreenIsLocked : true }); // for iOS quirk
-            } else {
-                this.mediaPlayer.play({ playAudioWhenScreenIsLocked : false });
-            }
+            this.mediaPlayer.play({ playAudioWhenScreenIsLocked : this.keepPlayingInBackground })
 
         } else {
             // playing a new audio source. Delete the old mediaPlayer object and create a new one. 
@@ -312,11 +319,7 @@ var app = {
             }
 
             // begin playing the audio
-            if (this.keepPlayingInBackground) {
-                this.mediaPlayer.play({ playAudioWhenScreenIsLocked : true }); // for iOS quirk
-            } else {
-                this.mediaPlayer.play({ playAudioWhenScreenIsLocked : false });
-            }
+            this.mediaPlayer.play({ playAudioWhenScreenIsLocked : this.keepPlayingInBackground })
         }
         this.playing = true;
         return;
@@ -468,7 +471,25 @@ var app = {
             .catch(function () {
                 this.dataError = true;
                 console.log('ERROR: unknown error getting programs data')
-                alert('ERROR: unknown error getting program information')
+            });
+
+    },
+
+    getSchedulePromise: function(scheduleUrl) {
+        return fetch(scheduleUrl)
+            .then(response => {
+                if (!response.ok) {
+                    console.log('schedule JSON response ERROR: ');
+                    console.log(response);
+                    console.log('status code: ' + response.status);
+                    throw new Error("HTTP error " + response.status);
+                }
+                return response.json();
+            })
+            .then(json => json.days)
+            .catch(function () {
+                this.dataError = true;
+                console.log('ERROR: unknown error getting schedule data')
             });
 
     },
@@ -565,6 +586,23 @@ var app = {
             element.appendChild(recordings);
         });
     },
+
+    buildScheduleSection: async function(url, containerElement) {
+        // build the on-demand listings page
+        app.getSchedulePromise(url)
+            .then(function(days) {
+                var htmlString = '';
+                days.forEach(function(day) {
+                    var listItems = day.shows.map(function(show) {
+                        return '<li>' + convertTime(show.time) + ' &mdash; ' + show.title + '</li>';
+                    });
+                    htmlString += '<h2>' + day.name + '</h2><ul>' + listItems.join(" ") + '</ul>\n';
+                });
+                var scheduleHTML = document.createElement('div');
+                scheduleHTML.innerHTML = htmlString;
+                containerElement.appendChild(scheduleHTML);
+            });
+    },
     
     displayAlerts: async function () {
         const response = await fetch(alertsURL);
@@ -584,8 +622,45 @@ var app = {
 
 app.initialize();
 
-// genaric helper functions
+
+
+/* 
+ * genaric helper functions
+ */
 function isEven(n) {
    return n % 2 == 0;
+}
+
+// convert military time to standard time
+var convertTime = function(fourDigitTime) {
+
+    // special condition for Pittsburg files
+    if (fourDigitTime == "PITT") {
+       return '(not applicable)';
+    }
+
+    fourDigitTime = fixTime(fourDigitTime)
+    var hours24 = Number(fourDigitTime.substring(0, 2),10);
+    var hours = ((hours24 + 11) % 12) + 1;
+    var amPm = hours24 > 11 ? 'pm' : 'am';
+    var minutes = fourDigitTime.substring(2);
+    return hours + ':' + minutes + amPm;
+}
+
+// fix the time so that 800 is 0800
+function fixTime(fourDigitTime) {
+
+    // special condition for files that don't have an air time (like Pittsburg)
+    if (isNaN(Number(fourDigitTime))) {
+       return fourDigitTime;
+    }
+
+    if (fourDigitTime == '0') {
+       return '0000';
+    } else if (fourDigitTime.length == 3) {
+       return '0'+fourDigitTime;
+    } else {
+       return fourDigitTime;
+    }
 }
 
