@@ -1,5 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="net.audioreader.mobile" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="net.audioreader.mobile" version="1.0"
+    xmlns="http://www.w3.org/ns/widgets"
+    xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>AudioReader</name>
     <description>Audio-Reader Network of Kansas's official mobile app. Listen to the live stream, play on-demand, and more.</description>
     <author email="dmantyla@ku.edu" href="https://reader.ku.edu">
@@ -42,6 +44,7 @@
 
 
     <platform name="ios">
+        <preference name="InspectableWebview" value="false" />
         <!-- iOS 8.0+ -->
         <!-- iPhone 6 Plus  -->
         <icon src="res/icon/ios/icon-60@3x.png" width="180" height="180" />
@@ -63,6 +66,7 @@
         <icon src="res/icon/ios/icon-76.png" width="76" height="76" />
         <icon src="res/icon/ios/icon-76@2x.png" width="152" height="152" />
         <!-- iPad Pro -->
+        <icon src="res/icon/ios/icon-83.5@2x.png" width="167" height="167" />
         <icon src="res/icon/ios/icon-167.png" width="167" height="167" />
         <!-- iPhone Spotlight and Settings Icon -->
         <icon src="res/icon/ios/icon-Small-40.png" width="40" height="40" />

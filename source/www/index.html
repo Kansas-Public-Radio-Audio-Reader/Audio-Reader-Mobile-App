@@ -19,7 +19,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' audio-reader.kansaspublicradio.org ondemand.audioreader.net data: audio-reader.kansaspublicradio.org gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' content:;"> --> 
 
     <!-- allow everything, except external css and external JS: -->
-    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">    
+    <meta http-equiv="Content-Security-Policy " content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">    
 
     <!-- allow fucking everything ?? 
     <meta http-equiv="Content-Security-Policy" content="default-src * ; style-src * ; script-src * ; media-src *">   
@@ -100,15 +100,6 @@
     </select>  
   </li>
   <li>
-    <label for='backgroundPlaySetting'>Keep playing in background: </label>
-    <select id='backgroundPlaySetting'>
-      <option selected="selected" value='1'>True</option>
-      <option value='0'>False</option>
-    </select>
-    (needs testing)
-  </li>
-  <li>
-
       <label for='playbackSpeedSetting'>On-Demand Playback Speed: </label>
       <select id='playbackSpeedSetting'>
         <option value='.25'>x0.25</option>
@@ -120,6 +111,13 @@
         <option value='1.75'>x1.75</option>
         <option value='2'>x2</option>
       </select>
+  </li>
+  <li>
+    <label for='backgroundPlaySetting'>Keep playing when screen is locked: </label>
+    <select id='backgroundPlaySetting'>
+      <option selected="selected" value='1'>True</option>
+      <option value='0'>False</option>
+    </select>
   </li>
 </ul>
 

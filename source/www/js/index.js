@@ -18,12 +18,19 @@
      *    - [CHECK] implement PAUSE
      *    - [CHECK] implement back button/swipe [working in Android only]
      *    - [CHECK] implement program schedule page
-     *    - implement HLS stream for iOS ?
-     *    - test Keep Playing in Background
+     *    - implement HLS stream for iOS ? [note: it doesn't fix buffering problem when switching streams]
+     *    - [CHECK] test Keep Playing in Background
      *    - add a "playing" label to On Demand recording when its selected and playing
      *    - [CHECK] KC stream
      *    - test on screen readers 
      *    - [CHECK] fix padding
+     *    - fix KC stream for iOS only
+     *    - add download links for on-demand
+     *    - make it work with voice command an iOS ! IMPORANT !
+     * 
+     * VERSION 2.0 TO-DO:
+     *    - buttons to skip forward and backward 10 or 15 seconds in the player
+     *    - book names and part #s in the episode titles
      */
 
 
@@ -38,6 +45,7 @@ const alertsURL = "https://portal.kansaspublicradio.org/widgets/aralerts.php";
 const defaultKeepInBackground = true;
 const defaultPlaybackSpeed = 1.0;
 const defaultFontSize = 14; // in points
+const disclaimerMessage = "Audio Reader's programming is intended solely for individuals who cannot read conventional print due to a disability. Ineligible listeners risk infringing on copyright laws, and Audio Reader is not responsible for any violations that may occur. Our programs may not be redistributed without our written consent. By clicking the 'OK' button bellow, you agree with these conditions.";
 /* end options and settings: */
 
 var app = {
@@ -45,7 +53,7 @@ var app = {
     // member variables
     keepPlayingInBackground: defaultKeepInBackground,
     playbackSpeed: defaultPlaybackSpeed,
-    audioUrl: [streamUrl],
+    audioUrl: [streamUrl], // must be seeded so the bottom play button will have something to play when app first loaded
     mediaPlayer: null,
     playing: false,
 
@@ -67,22 +75,17 @@ var app = {
     // function, 'app.receivedEvent(...);' must be explicitly called.
     onDeviceReady: async function() {
 
-        // lock the device orientation
         screen.orientation.lock('portrait');
-
-        // look for alert messages
         app.displayAlerts();
-
-        // initialize the audio player
-        app.setAudioSource(streamUrl);
-        app.initAudio(); // yes this is needed
-        app.setPlayerText();
         app.changeFontSizeEvent(defaultFontSize);
 
         // initialize the live stream page
         app.getNowPlayingTitlePromise().then(function(response) {
             document.getElementById("nowPlayingSpan").innerText = response;
         });
+
+        // display the disclaimer message, if they haven't already seen it
+        app.displayDisclaimer();
 
         // initialize the on-demand and schedule pages page
         var onDemandPage = document.getElementById("ondemand");
@@ -92,7 +95,7 @@ var app = {
 
         // add event listeners here
         document.addEventListener("backbutton", app.onBackButtonEvent, false);
-        $(document).bind('swipeleft',function(){app.onBackButtonEvent}); // not working, does nothing
+        $(document).bind('swipeleft',function(){app.onBackButtonEvent()});
 
         // navigation event listeners
         document.getElementById("menuButton").addEventListener('click', app.navigationEvent);
@@ -107,7 +110,7 @@ var app = {
         document.getElementById("pauseButton").addEventListener('click', function(){
             app.pauseButtonEvent();
         });
-        document.getElementById("playLiveStream").addEventListener('click', function(){
+        document.getElementById("playLiveStream").addEventListener('click', function(){                
             app.setAudioSource(streamUrl);
             app.playButtonEvent();
             app.setPlayerText(); // no parameter == set to now playing
@@ -128,6 +131,11 @@ var app = {
         document.getElementById("backgroundPlaySetting").addEventListener('change', function(event){
             app.changePlayInBackroundEvent(event.target.value);
         });
+
+        // initialize the audio player (save for last to avoid stream errors)
+        app.setAudioSource(streamUrl);
+        app.setPlayerText();
+        app.initAudio(); // yes this is needed
 
         console.log('Audio Reader app is ready!');
 
@@ -212,8 +220,8 @@ var app = {
         console.log('playback rate: ' + rate)
         this.playbackSpeed = rate;
 
-        // if we're already playing on demand, set the rate now
-        if ((this.audioUrl[0] != streamUrl) & this.playing) {
+        const liveStreams = [streamUrl, streamUrlKC];
+        if (this.playing && !liveStreams.includes(this.audioUrl[0])) {
             this.pauseAudio();
             this.playAudio();
         }
@@ -245,13 +253,19 @@ var app = {
         // note: error in android: "stopPlaying called during invalid state" means it's not playing
         if (this.mediaPlayer) {
             console.log('mediaPlayer already exists, releasing audio player object.')
-            this.stopAudio(); // important for android
+            this.stopAudio(); 
         }
 
-        // initialize the new media player
-        var newMediaPlayer = new Media(this.getAudioSource(),
+        // iOS needs a unique ID
+        var dynamicId = "stream_" + new Date().getTime();
+
+        // initialize the new media player with the new audio source
+        var newMediaPlayer = new Media(
+            this.getAudioSource(),
+
             // success callback
             function () { 
+                // note: this doesn't appear to be firing in iOS
                 console.log("playAudio(): Audio Success"); 
             },
             // error callback
@@ -267,6 +281,7 @@ var app = {
                         console.log('status change detected: MEDIA_NONE');
                         break;
                     case Media.MEDIA_STARTING:
+                        // note: this doesn't appear to be firing in iOS
                         console.log('status change detected: MEDIA_STARTING');
                         // display the "loading" sign
                         $('#loadingDiv').show(500);
@@ -281,12 +296,14 @@ var app = {
                         break;
                     case Media.MEDIA_STOPPED:
                         console.log('status change detected: MEDIA_STOPPED');
+                        $('#loadingDiv').hide(500); // just for safety
                         break;
-                    case defualt:
+                    default:
                         console.log('status change detected: unknown');
                         break;
                 }
-            }
+            },
+            dynamicId // fix for iOS playback issues...?? nah doesn't help. 
         );
         this.mediaPlayer = newMediaPlayer;
         return;
@@ -294,33 +311,27 @@ var app = {
 
     playAudio: function() {
 
+        $('#loadingDiv').show(500);
+
         // if the new audio source is the same as the old audio source
-        // then only resume playing it, otherwise start new
+        // then only resume playing it, else start new.
+        // otherwise, it would start over from the beginning after pausing.
         var resume = (this.audioUrl[0] == this.audioUrl[1]); 
+        var isLiveStream = (this.audioUrl[0] === streamUrl || this.audioUrl[0] === streamUrlKC);
 
-        if (resume) {
+        if (!resume) {
             // resume playing the same audio source
-
-            // adjust the playback speed if needed/able
-            if (this.audioUrl[0] != streamUrl) {
-                this.setPlaybackSpeed();
-            }
-
-            // begin playing the audio
-            this.mediaPlayer.play({ playAudioWhenScreenIsLocked : this.keepPlayingInBackground })
-
-        } else {
             // playing a new audio source. Delete the old mediaPlayer object and create a new one. 
             this.initAudio();
-
-            // adjust the playback speed if needed/able
-            if (this.audioUrl[0] != streamUrl) {
-                this.setPlaybackSpeed();
-            }
-
-            // begin playing the audio
-            this.mediaPlayer.play({ playAudioWhenScreenIsLocked : this.keepPlayingInBackground })
         }
+
+        // adjust the playback speed if not a stream
+        if ((this.audioUrl[0] != streamUrl) || (this.audioUrl[0] != streamUrlKC)) {
+            this.setPlaybackSpeed();
+        }
+
+        // begin playing the audio
+        this.mediaPlayer.play({ playAudioWhenScreenIsLocked : this.keepPlayingInBackground });
         this.playing = true;
         return;
     },
@@ -333,12 +344,31 @@ var app = {
     },
 
     stopAudio: function() {
+        /*
         // if anything is playing, stop it. 
         if (this.playing) {
             console.log('stopping audio that is playing')
             this.mediaPlayer.stop();
         }
         this.mediaPlayer.release(); // important for android
+        this.playing = false;
+        */
+
+        // always make sure the mediaPlayer object actually exists before touching it
+        if (this.mediaPlayer) {
+        
+            // stop active play pipelines safely
+            if (this.playing) {
+                console.log('stopping audio that is playing');
+                this.mediaPlayer.stop();
+            }
+        
+            // clear native resources (Crucial for BOTH Android memory and iOS format-swapping)
+            this.mediaPlayer.release();
+        
+            // wipe out the reference pointer completely so the app knows to build a fresh instance next time
+            this.mediaPlayer = null; 
+        }
         this.playing = false;
     },
 
@@ -352,7 +382,7 @@ var app = {
 
     setPlaybackSpeed: function(rate) {
         if (rate) {
-            this.playbackSpeed = speed;
+            this.playbackSpeed = rate;
             this.mediaPlayer.setRate(rate);
         } else {
             this.mediaPlayer.setRate(this.playbackSpeed);
@@ -365,17 +395,17 @@ var app = {
      *  ===================================
      */
 
-    togglePagesBackup: function(pageName) {
-        // first, close all pages
-        document.querySelectorAll(".page").forEach(function(page){
-            page.style.display = "none";
-        });
-        // next, display only the page we want to see
-        var x = document.getElementById(pageName);
-        x.style.display = "block";
+    displayDisclaimer: function() {
+        // note: this sets a cookie, but it appears to only be working in Android and not in iOS
+        // note: sessionStorage doesn't work on either ios or android
+        // what about local storage? yay! it works!
 
-        // set the viewport to the top
-        window.scrollTo(0, 0);
+        var seen = localStorage.getItem("arSeenDisclaimer");
+        if (!seen) {
+            alert(disclaimerMessage);
+            localStorage.setItem("arSeenDisclaimer", true);
+        }
+
     },
 
     togglePages: function(pageName) {
@@ -663,4 +693,28 @@ function fixTime(fourDigitTime) {
        return fourDigitTime;
     }
 }
+
+function setCookie(cname, cvalue, exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  let expires = "expires="+ d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 
