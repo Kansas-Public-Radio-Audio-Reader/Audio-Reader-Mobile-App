@@ -12,37 +12,44 @@ Date: October 2024
 FILES:
  - source/www/index.html
  	this defines the document structure, no JS code allowed in here, not even onclick="alert()" for example
- - spource/www/js/index.js
+ - source/www/js/index.js
  	this is where all the logics goes. This is like the main file of the application.
  	everything has to be done with listener events sinse no inline code allowed in the html files
 
 TODO: 
-- [CHECK] now playing information for live
-- [CHECK] on-demand catalog
-- [CHECK] program guide
-- [CHECK] app icons
+- ✅ now playing information for live
+- ✅ on-demand catalog
+- ✅ program guide
+- ✅ app icons
 -   audio player progress bar
-- [CHECK] toggle play button for pause button
-- [CHECK] set the now playing label 
-- [CHECK] set options for play when screen is locked (ios only?)
-     *        { playAudioWhenScreenIsLocked : true }
-     *        Note: To allow playback with the screen locked or background audio you have to 
-     *          add audio to UIBackgroundModes in the info.plist file.
-     *          see: https://developer.apple.com/documentation/uikit#//apple_ref/doc/uid/TP40007072-CH4-SW23
-- [CHECK] display "loading" while the stream is buffering and not yet playing [working in Android only
-- [CHECK] be able to set the playback rate
-- [CHECK] implement PAUSE
-- [CHECK] implement back button/swipe [working in Android only]
-- [CHECK] implement program schedule page
+- ✅ toggle play button for pause button
+- ✅ set the now playing label 
+- ✅ set options for play when screen is locked (ios only?)
+     -        { playAudioWhenScreenIsLocked : true }
+     -        Note: To allow playback with the screen locked or background audio you have to 
+     -          add audio to UIBackgroundModes in the info.plist file.
+     -          see: https://developer.apple.com/documentation/uikit#//apple_ref/doc/uid/TP40007072-CH4-SW23
+- ✅ display "loading" while the stream is buffering and not yet playing [working in Android only
+- ✅ be able to set the playback rate
+- ✅ implement PAUSE
+- ✅ implement back button/swipe [working in Android only]
+- ✅ implement program schedule page
 -  implement HLS stream for iOS ?
--  test Keep Playing in Background
+- ✅ test Keep Playing in Background
 -  add a "playing" label to On Demand recording when its selected and playing
-- [CHECK] KC stream
--   test on screen readers 
-- [CHECK] fix padding
+- ✅ KC stream
+-   test on screen readers AND VOICE COMMANDS IN IOS
+- ✅ fix padding
+
+v2.0 goals:
+ - book title and chapter name/number in episode titles
+ - buttons to skip forward and backward 15 seconds in the player
+ - KC stream bug fixes in iOS and get the program name of what's playing
+ - add download links for on-demand
+ - fix menu styling in Android
 
 ___________________________
-hot to use Apache Cordova:
+how to use Apache Cordova:
 ===========================
 
 to run the app in android: 
@@ -58,4 +65,5 @@ to run the app in ios
  - open a terminal
  - cd to AudioReaderApp
  - run `cordova run ios`
+ - or `cordova run ios --target=iPhone-17`
 
