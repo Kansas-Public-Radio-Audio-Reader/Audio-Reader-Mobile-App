@@ -16,6 +16,14 @@ FILES:
  	this is where all the logics goes. This is like the main file of the application.
  	everything has to be done with listener events sinse no inline code allowed in the html files
 
+Bug Fix for iOS: 
+  for streams to play correctly in iOS, you must make a fix to a platform file. 
+  file: 
+    project-root/platforms/ios/Audio-Reader/Plugins/cordova-plugin-media/CDVSound.m
+  set the avPlayer.automaticallyWaitsToMinimizeStalling from NO to YES on line 333:
+     avPlayer.automaticallyWaitsToMinimizeStalling = YES;
+  You must do this after every time the iOS platform is reset in Cordova. 
+
 TODO: 
 - ✅ now playing information for live
 - ✅ on-demand catalog

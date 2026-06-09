@@ -3,34 +3,9 @@
      *  ===============================================
      *  source/js/index.js
      *  author: Danny Mantyla
-     *  date: Q4 2024 to Q2 2025
+     *  v1 development: Q4 2024 to Q2 2025
+     *  v2 start date: June 2026
      *
-     *  TODO: 
-     *    - [CHECK] toggle play button for pause button
-     *    - [CHECK] set the now playing label 
-     *    - [CHECK] set options for play when screen is locked (ios only?)
-     *        { playAudioWhenScreenIsLocked : true }
-     *        Note: To allow playback with the screen locked or background audio you have to 
-     *          add audio to UIBackgroundModes in the info.plist file.
-     *          see: https://developer.apple.com/documentation/uikit#//apple_ref/doc/uid/TP40007072-CH4-SW23
-     *    - [CHECK] display "loading" while the stream is buffering and not yet playing [working in Android only
-     *    - [CHECK] be able to set the playback rate
-     *    - [CHECK] implement PAUSE
-     *    - [CHECK] implement back button/swipe [working in Android only]
-     *    - [CHECK] implement program schedule page
-     *    - implement HLS stream for iOS ? [note: it doesn't fix buffering problem when switching streams]
-     *    - [CHECK] test Keep Playing in Background
-     *    - add a "playing" label to On Demand recording when its selected and playing
-     *    - [CHECK] KC stream
-     *    - test on screen readers 
-     *    - [CHECK] fix padding
-     *    - fix KC stream for iOS only
-     *    - add download links for on-demand
-     *    - make it work with voice command an iOS ! IMPORANT !
-     * 
-     * VERSION 2.0 TO-DO:
-     *    - buttons to skip forward and backward 10 or 15 seconds in the player
-     *    - book names and part #s in the episode titles
      */
 
 
@@ -53,9 +28,9 @@ var app = {
     // member variables
     keepPlayingInBackground: defaultKeepInBackground,
     playbackSpeed: defaultPlaybackSpeed,
+    playing: false,
     audioUrl: [streamUrl], // must be seeded so the bottom play button will have something to play when app first loaded
     mediaPlayer: null,
-    playing: false,
 
     // Application Constructor
     initialize: function() {
@@ -135,7 +110,7 @@ var app = {
         // initialize the audio player (save for last to avoid stream errors)
         app.setAudioSource(streamUrl);
         app.setPlayerText();
-        app.initAudio(); // yes this is needed
+        app.initAudio();
 
         console.log('Audio Reader app is ready!');
 
@@ -246,6 +221,7 @@ var app = {
      *  =============================================
      */
 
+    
     initAudio: function() {
         // create a new mediaPlayer object and delete/release any existing such objects
 
@@ -308,10 +284,10 @@ var app = {
         this.mediaPlayer = newMediaPlayer;
         return;
     },
-
+    
     playAudio: function() {
 
-        $('#loadingDiv').show(500);
+        //$('#loadingDiv').show(500); // this will make the loading div appear in iOS but it makes it appear twice in Android
 
         // if the new audio source is the same as the old audio source
         // then only resume playing it, else start new.
@@ -335,7 +311,7 @@ var app = {
         this.playing = true;
         return;
     },
-
+    
     pauseAudio: function() {
         // TODO: handle differently for stream vs on-demand ??
         this.mediaPlayer.pause();
@@ -344,15 +320,6 @@ var app = {
     },
 
     stopAudio: function() {
-        /*
-        // if anything is playing, stop it. 
-        if (this.playing) {
-            console.log('stopping audio that is playing')
-            this.mediaPlayer.stop();
-        }
-        this.mediaPlayer.release(); // important for android
-        this.playing = false;
-        */
 
         // always make sure the mediaPlayer object actually exists before touching it
         if (this.mediaPlayer) {
@@ -380,6 +347,7 @@ var app = {
         return this.audioUrl[0];
     },
 
+    
     setPlaybackSpeed: function(rate) {
         if (rate) {
             this.playbackSpeed = rate;
@@ -388,6 +356,7 @@ var app = {
             this.mediaPlayer.setRate(this.playbackSpeed);
         }
     },
+
 
 
     /*  ___________________________________
