@@ -50,6 +50,7 @@ TODO:
 - ✅ fix padding
 
 v2.0 goals:
+ - built-in OS controlls for starting and stopping audio, like in the lock screen. 
  - book title and chapter name/number in episode titles
  - buttons to skip forward and backward 15 seconds in the player
  - KC stream bug fixes in iOS and get the program name of what's playing
